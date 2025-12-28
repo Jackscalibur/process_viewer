@@ -1,13 +1,16 @@
-use eframe::{egui, epi};
-use egui_extras::{TableBuilder, Column};
+mod process;
 
-fn main() -> eframe::Result<()> {
-    let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(800.0, 600.0)), // Will change later
-        ..Default::default()
-    };
-    eframe::run_native(
-        "Rust LSOF GUI",
-        options,
-        ..
+use crate::process::SysInfoSampler;
+use crate::process::ProcessSampler;
+
+fn main() {
+    let mut sampler = SysInfoSampler::new();
+    sampler.refresh();
+
+    let processes = sampler.snapshot();
+    for proc in processes {
+        println!("Process name: {}", proc.name.to_string_lossy());
+        println!("Process start time: {}", proc.start_time);
+        println!("Process ID: {}", proc.pid);
+    }  
 }
